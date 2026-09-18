@@ -706,6 +706,8 @@ Then 所有核心功能仍正常運作。
 
 公開表單的 Anonymous Response 如何在沒有自建 Backend 的情況下安全寫入 Google Sheets？
 
+**Resolved for MVP:** 採用 Creator-owned Google Apps Script Web App 作為 Submission Endpoint，詳見 `docs/decisions/ADR-001-response-submission.md`。此決策帶有限制，並須在正式發布前完成 production origin 與多瀏覽器驗證。
+
 ### OQ-02
 
 Form Schema 最終儲存於：
@@ -722,6 +724,8 @@ Public Form Schema 如何發布與取得？
 ### OQ-04
 
 Google Apps Script 是否適合作為 Creator-owned execution environment？
+
+**Resolved for MVP:** Phase 0 PoC 驗證通過，結論為 Accept with Limitations。Apps Script 適合作為 MVP 的 Creator-owned execution environment，限制詳見 ADR-001。
 
 ### OQ-05
 
