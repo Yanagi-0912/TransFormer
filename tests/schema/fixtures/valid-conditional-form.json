@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "id": "form_identity_demo",
+  "revision": 1,
+  "title": "身分資料",
+  "description": "依身分顯示不同頁面。",
+  "startBlockId": "block_identity",
+  "blocks": [
+    {
+      "id": "block_identity",
+      "title": "選擇身分",
+      "cards": [
+        {
+          "id": "card_intro",
+          "type": "text",
+          "content": "請選擇您的身分。",
+          "variant": "heading"
+        },
+        {
+          "id": "card_identity",
+          "type": "singleChoice",
+          "fieldKey": "identity",
+          "label": "您的身分",
+          "required": true,
+          "options": [
+            { "id": "option_student", "label": "學生" },
+            { "id": "option_worker", "label": "在職人士" }
+          ]
+        }
+      ],
+      "layout": {
+        "preset": "vertical",
+        "areas": {
+          "main": ["card_intro", "card_identity"]
+        }
+      }
+    },
+    {
+      "id": "block_student",
+      "title": "學生資料",
+      "cards": [
+        {
+          "id": "card_school",
+          "type": "shortText",
+          "fieldKey": "school_name",
+          "label": "學校名稱",
+          "required": true,
+          "maxLength": 100
+        }
+      ],
+      "layout": {
+        "preset": "vertical",
+        "areas": {
+          "main": ["card_school"]
+        }
+      }
+    },
+    {
+      "id": "block_worker",
+      "title": "工作資料",
+      "cards": [
+        {
+          "id": "card_company",
+          "type": "shortText",
+          "fieldKey": "company_name",
+          "label": "公司名稱",
+          "required": false,
+          "maxLength": 100
+        }
+      ],
+      "layout": {
+        "preset": "vertical",
+        "areas": {
+          "main": ["card_company"]
+        }
+      }
+    }
+  ],
+  "flow": {
+    "transitions": [
+      {
+        "id": "transition_to_student",
+        "fromBlockId": "block_identity",
+        "destination": {
+          "type": "block",
+          "blockId": "block_student"
+        },
+        "priority": 0,
+        "condition": {
+          "cardId": "card_identity",
+          "operator": "equals",
+          "optionId": "option_student"
+        }
+      },
+      {
+        "id": "transition_to_worker",
+        "fromBlockId": "block_identity",
+        "destination": {
+          "type": "block",
+          "blockId": "block_worker"
+        },
+        "priority": 1
+      },
+      {
+        "id": "transition_submit_student",
+        "fromBlockId": "block_student",
+        "destination": {
+          "type": "submit"
+        },
+        "priority": 0
+      },
+      {
+        "id": "transition_submit_worker",
+        "fromBlockId": "block_worker",
+        "destination": {
+          "type": "submit"
+        },
+        "priority": 0
+      }
+    ]
+  }
+}

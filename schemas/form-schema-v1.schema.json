@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://transformer.local/schemas/form-schema-v1.schema.json",
+  "title": "TransFormer Form Schema v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "revision", "title", "startBlockId", "blocks", "flow"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "$ref": "#/$defs/id" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "description": { "type": "string", "maxLength": 2000 },
+    "startBlockId": { "$ref": "#/$defs/id" },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": { "$ref": "#/$defs/block" }
+    },
+    "flow": { "$ref": "#/$defs/flow" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{2,63}$"
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    },
+    "textCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "content", "variant"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "text" },
+        "content": { "type": "string", "minLength": 1, "maxLength": 10000 },
+        "variant": { "enum": ["heading", "body", "caption"] }
+      }
+    },
+    "imageCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "url", "alt"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "image" },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://", "maxLength": 2048 },
+        "alt": { "type": "string", "maxLength": 500 },
+        "caption": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "shortTextCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "fieldKey", "label", "required"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "shortText" },
+        "fieldKey": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "required": { "type": "boolean" },
+        "placeholder": { "type": "string", "maxLength": 200 },
+        "minLength": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "maxLength": { "type": "integer", "minimum": 1, "maximum": 1000 }
+      }
+    },
+    "longTextCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "fieldKey", "label", "required"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "longText" },
+        "fieldKey": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "required": { "type": "boolean" },
+        "placeholder": { "type": "string", "maxLength": 200 },
+        "minLength": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "maxLength": { "type": "integer", "minimum": 1, "maximum": 10000 }
+      }
+    },
+    "singleChoiceCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "fieldKey", "label", "required", "options"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "singleChoice" },
+        "fieldKey": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "required": { "type": "boolean" },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 100,
+          "items": { "$ref": "#/$defs/option" }
+        }
+      }
+    },
+    "multipleChoiceCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "fieldKey", "label", "required", "options"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "const": "multipleChoice" },
+        "fieldKey": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "required": { "type": "boolean" },
+        "minSelections": { "type": "integer", "minimum": 0 },
+        "maxSelections": { "type": "integer", "minimum": 1 },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 100,
+          "items": { "$ref": "#/$defs/option" }
+        }
+      }
+    },
+    "card": {
+      "oneOf": [
+        { "$ref": "#/$defs/textCard" },
+        { "$ref": "#/$defs/imageCard" },
+        { "$ref": "#/$defs/shortTextCard" },
+        { "$ref": "#/$defs/longTextCard" },
+        { "$ref": "#/$defs/singleChoiceCard" },
+        { "$ref": "#/$defs/multipleChoiceCard" }
+      ]
+    },
+    "idList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "verticalLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preset", "areas"],
+      "properties": {
+        "preset": { "const": "vertical" },
+        "areas": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["main"],
+          "properties": { "main": { "$ref": "#/$defs/idList" } }
+        }
+      }
+    },
+    "twoColumnsLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preset", "areas"],
+      "properties": {
+        "preset": { "const": "twoColumns" },
+        "areas": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["left", "right"],
+          "properties": {
+            "left": { "$ref": "#/$defs/idList" },
+            "right": { "$ref": "#/$defs/idList" }
+          }
+        }
+      }
+    },
+    "imageLeftLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preset", "areas"],
+      "properties": {
+        "preset": { "const": "imageLeft" },
+        "areas": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["media", "content"],
+          "properties": {
+            "media": { "$ref": "#/$defs/idList" },
+            "content": { "$ref": "#/$defs/idList" }
+          }
+        }
+      }
+    },
+    "imageRightLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preset", "areas"],
+      "properties": {
+        "preset": { "const": "imageRight" },
+        "areas": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["content", "media"],
+          "properties": {
+            "content": { "$ref": "#/$defs/idList" },
+            "media": { "$ref": "#/$defs/idList" }
+          }
+        }
+      }
+    },
+    "heroLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preset", "areas"],
+      "properties": {
+        "preset": { "const": "hero" },
+        "areas": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["hero", "title", "content"],
+          "properties": {
+            "hero": { "$ref": "#/$defs/idList" },
+            "title": { "$ref": "#/$defs/idList" },
+            "content": { "$ref": "#/$defs/idList" }
+          }
+        }
+      }
+    },
+    "layout": {
+      "oneOf": [
+        { "$ref": "#/$defs/verticalLayout" },
+        { "$ref": "#/$defs/twoColumnsLayout" },
+        { "$ref": "#/$defs/imageLeftLayout" },
+        { "$ref": "#/$defs/imageRightLayout" },
+        { "$ref": "#/$defs/heroLayout" }
+      ]
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "cards", "layout"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "maxLength": 120 },
+        "cards": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": { "$ref": "#/$defs/card" }
+        },
+        "layout": { "$ref": "#/$defs/layout" }
+      }
+    },
+    "blockDestination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "blockId"],
+      "properties": {
+        "type": { "const": "block" },
+        "blockId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "submitDestination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": { "type": { "const": "submit" } }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cardId", "operator", "optionId"],
+      "properties": {
+        "cardId": { "$ref": "#/$defs/id" },
+        "operator": { "enum": ["equals", "contains"] },
+        "optionId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "fromBlockId", "destination", "priority"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "fromBlockId": { "$ref": "#/$defs/id" },
+        "destination": {
+          "oneOf": [
+            { "$ref": "#/$defs/blockDestination" },
+            { "$ref": "#/$defs/submitDestination" }
+          ]
+        },
+        "priority": { "type": "integer", "minimum": 0 },
+        "condition": { "$ref": "#/$defs/condition" }
+      }
+    },
+    "flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transitions"],
+      "properties": {
+        "transitions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/transition" }
+        }
+      }
+    }
+  }
+}
