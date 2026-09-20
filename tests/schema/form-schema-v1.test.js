@@ -1,11 +1,14 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const test = require('node:test');
-const assert = require('node:assert/strict');
+import fs from 'node:fs';
+import path from 'node:path';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
 
-const { validateFormSchema } = require('../../src/domain/schema/validate-form-schema');
-const { validateResponseBinding } = require('../../src/domain/schema/validate-response-binding');
-const { evaluateNext, FlowEvaluationError } = require('../../src/domain/flow/evaluate-flow');
+import { validateFormSchema } from '../../src/domain/schema/validate-form-schema.js';
+import { validateResponseBinding } from '../../src/domain/schema/validate-response-binding.js';
+import { evaluateNext, FlowEvaluationError } from '../../src/domain/flow/evaluate-flow.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const fixturePath = path.join(__dirname, 'fixtures', 'valid-conditional-form.json');
 

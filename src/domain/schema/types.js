@@ -69,4 +69,4 @@
  * @property {string} message
  */
 
-module.exports = {};
+export {};

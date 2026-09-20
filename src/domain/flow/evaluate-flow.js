@@ -56,4 +56,4 @@ function conditionMatches(condition, answer) {
   return false;
 }
 
-module.exports = { evaluateNext, FlowEvaluationError };
+export { evaluateNext, FlowEvaluationError };

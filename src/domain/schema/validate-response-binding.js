@@ -50,4 +50,4 @@ function escapePointer(value) {
   return value.replace(/~/g, '~0').replace(/\//g, '~1');
 }
 
-module.exports = { validateResponseBinding };
+export { validateResponseBinding };
